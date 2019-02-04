@@ -1,5 +1,7 @@
 package com.api.market.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,22 @@ public class CategoriesServiceImpl implements CategoriesService {
         }
         
 		return categorie;
+	}
+
+	@Override
+	public Categories loadCategorieByName(String name) {
+		Categories categorie = categoriesDao.findByName(name);
+        
+        if(categorie == null) {
+        	throw new UsernameNotFoundException("categorie: " + name + " no existe en el sistema!");
+        }
+        
+		return categorie;
+	}
+
+	@Override
+	public List<?> getAllCategories() {
+		return (List<?>) categoriesDao.findAll();
 	}
 
 }

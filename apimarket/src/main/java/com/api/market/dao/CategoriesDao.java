@@ -7,5 +7,7 @@ import com.api.market.entity.Categories;
 
 @Repository
 public interface CategoriesDao extends CrudRepository<Categories, Long> {
+	
+	public Categories findByName(String name);
 
 }
