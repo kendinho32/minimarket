@@ -22,7 +22,7 @@ public class Categories implements Serializable {
 	@Column(name = "id")
 	private Long id;
 	
-	@Column(length = 60)
+	@Column(length = 60, unique = true)
 	private String name;
 	
 	@Column(length = 60)

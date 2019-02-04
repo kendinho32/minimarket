@@ -25,7 +25,7 @@ public class Products implements Serializable {
 	@Column(name = "id")
 	private Long id;
 	
-	@Column(length = 60)
+	@Column(length = 60, unique = true)
 	private String name;
 	
 	@Column(length = 250)
@@ -33,7 +33,7 @@ public class Products implements Serializable {
 
 	private Long price;
 	
-	private Long quantity;
+	private float quantity;
 	
 	@Column(length = 200)
 	private String image;
@@ -73,11 +73,11 @@ public class Products implements Serializable {
 		this.price = price;
 	}
 
-	public Long getQuantity() {
+	public float getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(Long quantity) {
+	public void setQuantity(float quantity) {
 		this.quantity = quantity;
 	}
 

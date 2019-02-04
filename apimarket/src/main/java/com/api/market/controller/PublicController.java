@@ -1,9 +1,18 @@
 package com.api.market.controller;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,15 +75,57 @@ public class PublicController {
 	}
 	
 	/**
-	 * Metodo que se encarga de procesar un archivo para poblar la BD
+	 * Metodo que se encarga de procesar un archivo Excel para poblar la BD
 	 * 
 	 * @param file Archivo que contiene las caracteristicas de los productos
 	 * @return {@link ApiResponse} Objeto que contiene la respuesta del metodo rest
+	 * @throws ErrorNegocioException 
 	 */
+	@SuppressWarnings("resource")
 	@PostMapping("/process-file")
-	public ResponseEntity<?> listFile(@RequestParam("inventario") MultipartFile file) {
-		
+	public ResponseEntity<?> listFile(@RequestParam("inventario") MultipartFile file) throws ErrorNegocioException {
+		try {
+			Workbook workbook = new XSSFWorkbook(file.getInputStream());
+			Sheet firstSheet = workbook.getSheetAt(0);
+	        Iterator<?> iterator = firstSheet.iterator();
+	        
+	        DataFormatter formatter = new DataFormatter();
+	        while (iterator.hasNext()) {
+	            Row nextRow = (Row) iterator.next();
+	            Iterator<?> cellIterator = nextRow.cellIterator();
+	            while(cellIterator.hasNext()) {
+	                Cell cell = (Cell) cellIterator.next();
+	                String contenidoCelda = formatter.formatCellValue(cell);
+	                System.out.println("celda: " + contenidoCelda);
+	            }   
+	        }
+		} catch (Exception e) {
+			logger.error("No es posible leer el archivo");
+			throw new ErrorNegocioException("No es posible guardar el producto","SOL-0004",e);
+        }
 		return new ResponseEntity<>(new ApiResponse(), HttpStatus.OK);
+	}
+	
+	@PostMapping("/update-inventario")
+	public ResponseEntity<?> updateInventario(@RequestParam("inventario") MultipartFile file) throws ErrorNegocioException {
+		try {
+			ApiResponse response = publicService.dumpData(file);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible guardar la data en la BD");
+            throw new ErrorNegocioException("No es posible guardar el producto","SOL-0004",et);
+        }
+	}
+	
+	@GetMapping("/get-all-categories")
+	public ResponseEntity<?> getAllCategories() throws ErrorNegocioException {
+		try {
+			List<?> response = publicService.getAllCategories();
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible recuperar la lista de categorias de la BD");
+            throw new ErrorNegocioException("No es posible recuperar la lista de categorias de la BD","SOL-0004",et);
+        }
 	}
 
 }
