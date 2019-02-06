@@ -120,7 +120,8 @@ public class PublicController {
 	@GetMapping("/get-all-categories")
 	public ResponseEntity<?> getAllCategories() throws ErrorNegocioException {
 		try {
-			List<?> response = publicService.getAllCategories();
+			List<?> listCategories = publicService.getAllCategories();
+			ApiResponse response = new ApiResponse(true, "Categorias recuperadas exitosamente...!", listCategories);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch(ErrorTecnicoException et) {
             logger.error("No es posible recuperar la lista de categorias de la BD");
