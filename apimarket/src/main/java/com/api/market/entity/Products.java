@@ -38,7 +38,7 @@ public class Products implements Serializable {
 	@Column(length = 200)
 	private String image;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Categories categorie;
 
 	public Long getId() {

@@ -106,6 +106,14 @@ public class PublicController {
 		return new ResponseEntity<>(new ApiResponse(), HttpStatus.OK);
 	}
 	
+	/**
+	 * Metodo rest que se encarga de volcar la DATA de un file dentro de la BD en la columna
+	 * productos
+	 * 
+	 * @param file File que contiene la lista de productos que se desea guardar dentro de la BD
+	 * @return {@link ApiResponse} Objeto que contiene la respuesta de la ejecucion del metodo
+	 * @throws ErrorNegocioException
+	 */
 	@PostMapping("/update-inventario")
 	public ResponseEntity<?> updateInventario(@RequestParam("inventario") MultipartFile file) throws ErrorNegocioException {
 		try {
@@ -117,11 +125,35 @@ public class PublicController {
         }
 	}
 	
+	/**
+	 * Metodo que se encarga de recuperar todas las categorias almacenadas dentro de la BD
+	 * 
+	 * @return {@link ApiResponse} Objeto que contiene la respuesta de la ejecucion del metodo
+	 * @throws ErrorNegocioException
+	 */
 	@GetMapping("/get-all-categories")
 	public ResponseEntity<?> getAllCategories() throws ErrorNegocioException {
 		try {
 			List<?> listCategories = publicService.getAllCategories();
 			ApiResponse response = new ApiResponse(true, "Categorias recuperadas exitosamente...!", listCategories);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible recuperar la lista de categorias de la BD");
+            throw new ErrorNegocioException("No es posible recuperar la lista de categorias de la BD","SOL-0004",et);
+        }
+	}
+	
+	/**
+	 * Metodo que se encarga de recuperar todos los productos registrados dentro de la BD
+	 * 
+	 * @return {@link ApiResponse} Objeto que contiene la respuesta de la ejecucion del metodo
+	 * @throws ErrorNegocioException
+	 */
+	@GetMapping("/get-all-products")
+	public ResponseEntity<?> getAllProducts() throws ErrorNegocioException {
+		try {
+			List<?> listProducts = publicService.getAllProducts();
+			ApiResponse response = new ApiResponse(true, "Productos recuperados exitosamente...!", listProducts);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch(ErrorTecnicoException et) {
             logger.error("No es posible recuperar la lista de categorias de la BD");

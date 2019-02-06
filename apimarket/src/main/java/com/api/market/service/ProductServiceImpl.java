@@ -20,4 +20,9 @@ public class ProductServiceImpl implements ProductsService {
 		productDao.saveAll((Iterable<Products>) products);
 	}
 
+	@Override
+	public List<?> getAllProducts() {
+		return (List<?>) productDao.findAll();
+	}
+
 }

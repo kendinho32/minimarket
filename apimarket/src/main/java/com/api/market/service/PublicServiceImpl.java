@@ -22,6 +22,9 @@ public class PublicServiceImpl implements PublicService {
 	private CategoriesService categorieService;
 	
 	@Autowired
+	private ProductsService productService;
+	
+	@Autowired
 	private ProductDao productDao;
 	
 	@Autowired
@@ -81,6 +84,11 @@ public class PublicServiceImpl implements PublicService {
 	@Override
 	public List<?> getAllCategories() throws ErrorTecnicoException {
 		return categorieService.getAllCategories();
+	}
+
+	@Override
+	public List<?> getAllProducts() throws ErrorTecnicoException {
+		return productService.getAllProducts();
 	}
 
 }
