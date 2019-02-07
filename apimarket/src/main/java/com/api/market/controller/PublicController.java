@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -158,6 +159,18 @@ public class PublicController {
 		} catch(ErrorTecnicoException et) {
             logger.error("No es posible recuperar la lista de categorias de la BD");
             throw new ErrorNegocioException("No es posible recuperar la lista de categorias de la BD","SOL-0004",et);
+        }
+	}
+	
+	@GetMapping("/get-products-by-categorie/{idCategorie}")
+	public ResponseEntity<?> getAllProductsByCategorie(@PathVariable(value = "idCategorie") Long id) throws ErrorNegocioException {
+		try {
+			List<?> listProducts = publicService.getProductsByCategorie(id);
+			ApiResponse response = new ApiResponse(true, "Productos recuperados exitosamente...!", listProducts);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible recuperar la lista de productos de la BD");
+            throw new ErrorNegocioException("No es posible recuperar la lista de productos de la BD","SOL-0004",et);
         }
 	}
 

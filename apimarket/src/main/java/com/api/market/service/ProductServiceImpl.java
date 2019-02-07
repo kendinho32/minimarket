@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.api.market.dao.ProductDao;
+import com.api.market.entity.Categories;
 import com.api.market.entity.Products;
 
 @Service
@@ -23,6 +24,11 @@ public class ProductServiceImpl implements ProductsService {
 	@Override
 	public List<?> getAllProducts() {
 		return (List<?>) productDao.findAll();
+	}
+
+	@Override
+	public List<?> getProductsByCategorie(Categories categorie) {
+		return productDao.findAllProductsByCategorie(categorie);
 	}
 
 }

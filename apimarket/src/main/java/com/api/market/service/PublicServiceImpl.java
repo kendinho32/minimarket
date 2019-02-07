@@ -91,4 +91,10 @@ public class PublicServiceImpl implements PublicService {
 		return productService.getAllProducts();
 	}
 
+	@Override
+	public List<?> getProductsByCategorie(Long id) throws ErrorTecnicoException {
+		Categories categories = categorieService.loadCategorieById(id);
+		return productService.getProductsByCategorie(categories);
+	}
+
 }

@@ -14,5 +14,6 @@ public interface PublicService {
 	public ApiResponse dumpData(MultipartFile file) throws ErrorTecnicoException;
 	public List<?> getAllCategories() throws ErrorTecnicoException;
 	public List<?> getAllProducts() throws ErrorTecnicoException;
+	public List<?> getProductsByCategorie(Long id) throws ErrorTecnicoException;
 
 }
