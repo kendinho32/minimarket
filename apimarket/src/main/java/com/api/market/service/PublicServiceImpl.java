@@ -97,4 +97,9 @@ public class PublicServiceImpl implements PublicService {
 		return productService.getProductsByCategorie(categories);
 	}
 
+	@Override
+	public Products getProductByName(String name) throws ErrorTecnicoException {
+		return productService.getProductByName(name);
+	}
+
 }

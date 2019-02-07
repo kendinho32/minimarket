@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.api.market.entity.Products;
 import com.api.market.exception.ErrorNegocioException;
 import com.api.market.exception.ErrorTecnicoException;
 import com.api.market.payload.ApiResponse;
@@ -171,6 +172,18 @@ public class PublicController {
 		} catch(ErrorTecnicoException et) {
             logger.error("No es posible recuperar la lista de productos de la BD");
             throw new ErrorNegocioException("No es posible recuperar la lista de productos de la BD","SOL-0004",et);
+        }
+	}
+	
+	@GetMapping("/get-product-by-name/{name}")
+	public ResponseEntity<?> getProductByName(@PathVariable(value = "name") String name) throws ErrorNegocioException {
+		try {
+			Products products = publicService.getProductByName(name);
+			ApiResponse response = new ApiResponse(true, "Producto recuperado exitosamente...!", products);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible recuperar el producto de la BD");
+            throw new ErrorNegocioException("No es posible recuperar el producto de la BD","SOL-0004",et);
         }
 	}
 

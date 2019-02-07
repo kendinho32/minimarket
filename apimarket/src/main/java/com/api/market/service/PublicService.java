@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.api.market.entity.Products;
 import com.api.market.exception.ErrorTecnicoException;
 import com.api.market.payload.ApiResponse;
 import com.api.market.payload.ProductRequest;
@@ -15,5 +16,6 @@ public interface PublicService {
 	public List<?> getAllCategories() throws ErrorTecnicoException;
 	public List<?> getAllProducts() throws ErrorTecnicoException;
 	public List<?> getProductsByCategorie(Long id) throws ErrorTecnicoException;
+	public Products getProductByName(String name) throws ErrorTecnicoException;
 
 }
