@@ -35,6 +35,8 @@ public class Products implements Serializable {
 	
 	private float quantity;
 	
+	private boolean outstanding;
+	
 	@Column(length = 200)
 	private String image;
 	
@@ -95,6 +97,14 @@ public class Products implements Serializable {
 
 	public void setCategorie(Categories categorie) {
 		this.categorie = categorie;
+	}
+
+	public boolean isOutstanding() {
+		return outstanding;
+	}
+
+	public void setOutstanding(boolean outstanding) {
+		this.outstanding = outstanding;
 	}
 	
 }
