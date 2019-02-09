@@ -35,10 +35,12 @@ public class Products implements Serializable {
 	
 	private float quantity;
 	
+	private boolean outstanding;
+	
 	@Column(length = 200)
 	private String image;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Categories categorie;
 
 	public Long getId() {
@@ -95,6 +97,14 @@ public class Products implements Serializable {
 
 	public void setCategorie(Categories categorie) {
 		this.categorie = categorie;
+	}
+
+	public boolean isOutstanding() {
+		return outstanding;
+	}
+
+	public void setOutstanding(boolean outstanding) {
+		this.outstanding = outstanding;
 	}
 	
 }
