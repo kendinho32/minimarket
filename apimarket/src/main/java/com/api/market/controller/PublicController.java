@@ -1,6 +1,7 @@
 package com.api.market.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,6 +14,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +36,7 @@ import com.api.market.payload.ApiResponse;
 import com.api.market.payload.LoginRequest;
 import com.api.market.payload.SignUpRequest;
 import com.api.market.service.CategoriesService;
+import com.api.market.service.IUploadFileService;
 import com.api.market.service.JWTService;
 import com.api.market.service.JpaUserDetailsService;
 import com.api.market.service.PublicService;
@@ -62,6 +66,9 @@ public class PublicController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private IUploadFileService uploadFileService;
 	
 	@GetMapping("/prueba")
 	public String prueba() {
@@ -204,5 +211,26 @@ public class PublicController {
             logger.error("No es posible recuperar el producto de la BD");
             throw new ErrorNegocioException("No es posible recuperar el producto de la BD","SOL-0004",et);
         }
+	}
+	
+	/**
+	 * Metodo que se encarga de traer la imagen guardada para el producto
+	 * 
+	 * @param filename
+	 * @return
+	 */
+	@GetMapping("/get-picture-product/{filename:.+}")
+	public ResponseEntity<Resource> getPicture(@PathVariable String filename) {
+		Resource recurso = null;
+
+		try {
+			recurso = uploadFileService.loadImg(filename);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
+				.body(recurso);
 	}
 }

@@ -1,7 +1,6 @@
 package com.api.market.controller;
 
 import java.io.IOException;
-
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
