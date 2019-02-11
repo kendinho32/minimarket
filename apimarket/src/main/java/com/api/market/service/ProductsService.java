@@ -2,11 +2,18 @@ package com.api.market.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.api.market.entity.Categories;
 import com.api.market.entity.Products;
+import com.api.market.exception.ErrorTecnicoException;
+import com.api.market.payload.ApiResponse;
+import com.api.market.payload.ProductRequest;
 
 public interface ProductsService {
 	
+	public ApiResponse createProduct(ProductRequest request) throws ErrorTecnicoException;
+	public ApiResponse dumpData(MultipartFile file) throws ErrorTecnicoException;
 	public void savedAll(List<?> products);
 	public List<?> getAllProducts();
 	public List<?> getProductsByCategorie(Categories categorie);
