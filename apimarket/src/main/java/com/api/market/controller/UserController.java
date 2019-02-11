@@ -2,6 +2,7 @@ package com.api.market.controller;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.market.entity.Usuario;
 import com.api.market.payload.ApiResponse;
 import com.api.market.payload.UpdateUserRequest;
+import com.api.market.service.JWTServiceImpl;
 import com.api.market.service.UserService;
 
 @RestController
@@ -42,12 +44,19 @@ public class UserController {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PostMapping("/updateUser")
-	public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest) throws IOException {
+	public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest, HttpServletRequest servletRequest) throws IOException {
 		logger.info("Se invoca el metodo updateUser, para modificar las caracteristicas del usuario");
+		
 		Usuario user = userService.getUsuario(updateUserRequest.getId());
 		
 		if (user == null) {
 			return new ResponseEntity(new ApiResponse(false, "El usuario no existe!"), HttpStatus.BAD_REQUEST);
+		}
+		String[] header = servletRequest.getHeader(JWTServiceImpl.HEADER_STRING).split(" ");
+		
+		// Verifico que el token corresponda al usuario
+		if(!userService.verificarToken(user, header[1])) {
+			return new ResponseEntity(new ApiResponse(false, "El token no corresponde al usuario!"), HttpStatus.UNAUTHORIZED);
 		}
 
 		logger.info("usuario --> " + user.getName());
@@ -55,7 +64,7 @@ public class UserController {
 		user.setName(updateUserRequest.getName());
 
 		Usuario result = userService.updateUser(user);
-		ApiResponse response = new ApiResponse(true, "usuario registrado exitosamente!", result);
+		ApiResponse response = new ApiResponse(true, "usuario actualizado exitosamente!", result);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 

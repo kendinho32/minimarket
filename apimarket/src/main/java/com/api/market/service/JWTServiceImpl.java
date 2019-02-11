@@ -38,6 +38,13 @@ public class JWTServiceImpl implements JWTService {
 	public static final String TOKEN_PREFIX = "Bearer ";
 	public static final String HEADER_STRING = "Authorization";
 	
+	/**
+     * Funcion que se encarga de crear el token utilizando el caracter secreto para 
+     * crear el cuerpo y la cabecera del token
+     * 
+     * @param authentication Objeto que representa las caracteristicas principales del usuario autenticado
+     * @return String que representa la cadena de caracteres creadas para ser el token del usuario
+     */
 	@Override
 	public String create(Authentication auth) throws IOException {
 		String username = ((User) auth.getPrincipal()).getUsername();
@@ -48,11 +55,21 @@ public class JWTServiceImpl implements JWTService {
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_DATE)).compact();
 	}
 	
+	/**
+     * Funcion que se encarga de crear el token utilizando el caracter secreto para 
+     * crear el cuerpo y la cabecera del token
+     * 
+     * @param Usuario Objeto que representa las caracteristicas principales del usuario
+     * @return String que representa la cadena de caracteres creadas para ser el token del usuario
+     */
 	@Override
 	public String createTokenByUser(Usuario user) throws IOException {
 		String username = user.getName();
 		
 		Claims claims = Jwts.claims();
+		claims.put("authorities", new ObjectMapper().writeValueAsString(user.getRoles()));
+		claims.put("name", new ObjectMapper().writeValueAsString(user.getName()));
+		claims.put("email", new ObjectMapper().writeValueAsString(user.getEmail()));
 		return Jwts.builder().setClaims(claims).setSubject(username)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret).setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_DATE)).compact();
