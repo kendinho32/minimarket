@@ -12,6 +12,7 @@ import com.api.market.entity.Products;
 public interface ProductDao extends CrudRepository<Products, Long> {
 	
 	public List<?> findAllProductsByCategorie(Categories categorie);
+	public List<?> findAllProductsByStatus(boolean status);
 	public Products findProductsByName(String name);
 
 }

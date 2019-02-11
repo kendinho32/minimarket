@@ -2,6 +2,7 @@ package com.api.market.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,5 +107,25 @@ public class ProductServiceImpl implements ProductsService {
 	@Override
 	public Products getProductByName(String name) {
 		return productDao.findProductsByName(name);
+	}
+
+	@Override
+	public Optional<Products> getProductById(Long id) {
+		return productDao.findById(id);
+	}
+
+	@Override
+	public ApiResponse updateProduct(Products product) throws ErrorTecnicoException {
+		ApiResponse response = new ApiResponse(false, null);
+		productDao.save(product);
+		response.setMessage("Producto almacenado con exito");
+		response.setSuccess(true);
+		
+		return response;
+	}
+
+	@Override
+	public List<?> getAllProductsByStatus(boolean status) {
+		return productDao.findAllProductsByStatus(status);
 	}
 }

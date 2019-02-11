@@ -33,6 +33,7 @@ import com.api.market.payload.ApiResponse;
 import com.api.market.payload.LoginRequest;
 import com.api.market.payload.SignUpRequest;
 import com.api.market.service.CategoriesService;
+import com.api.market.service.JWTService;
 import com.api.market.service.JpaUserDetailsService;
 import com.api.market.service.PublicService;
 import com.api.market.service.UserService;
@@ -55,6 +56,9 @@ public class PublicController {
 	
 	@Autowired
 	private JpaUserDetailsService userDetailsService;
+	
+	@Autowired
+	private JWTService jwtService;
 	
 	@Autowired
 	private UserService userService;
@@ -103,6 +107,9 @@ public class PublicController {
 		if (user == null) {
 			return new ResponseEntity(new ApiResponse(false, "Usuario o contraseña inválidos!"), HttpStatus.UNAUTHORIZED);
 		}
+		
+		user.setToken(jwtService.createTokenByUser(user));
+		user = userService.updateUser(user);
 		
 		return new ResponseEntity<>(new ApiResponse(true, "usuario logeado exitosamente!", user), HttpStatus.OK);
 	}

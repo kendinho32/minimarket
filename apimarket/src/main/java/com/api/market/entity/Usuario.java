@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -77,6 +78,8 @@ public class Usuario implements Serializable {
 	@JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
 	private Date lastLogin;
 	
+	@Lob 
+	@Column(name="token", length=512)
 	private String token;
 
 	public Long getId() {

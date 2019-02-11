@@ -38,4 +38,9 @@ public class PublicServiceImpl implements PublicService {
 		return productService.getProductByName(name);
 	}
 
+	@Override
+	public List<?> getAllProductsByStatus(boolean status) throws ErrorTecnicoException {
+		return productService.getAllProductsByStatus(status);
+	}
+
 }

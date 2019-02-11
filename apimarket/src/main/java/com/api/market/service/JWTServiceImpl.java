@@ -34,7 +34,7 @@ public class JWTServiceImpl implements JWTService {
 	@Value("${app.jwtSecret}")
     private String jwtSecret;
 	
-	public static final long EXPIRATION_DATE = 1800000L;
+	public static final long EXPIRATION_DATE = 86400000L;
 	public static final String TOKEN_PREFIX = "Bearer ";
 	public static final String HEADER_STRING = "Authorization";
 	
@@ -64,12 +64,10 @@ public class JWTServiceImpl implements JWTService {
      */
 	@Override
 	public String createTokenByUser(Usuario user) throws IOException {
-		String username = user.getName();
+		String username = user.getEmail();
 		
 		Claims claims = Jwts.claims();
 		claims.put("authorities", new ObjectMapper().writeValueAsString(user.getRoles()));
-		claims.put("name", new ObjectMapper().writeValueAsString(user.getName()));
-		claims.put("email", new ObjectMapper().writeValueAsString(user.getEmail()));
 		return Jwts.builder().setClaims(claims).setSubject(username)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret).setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_DATE)).compact();

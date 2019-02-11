@@ -15,10 +15,6 @@ public class UpdateUserRequest {
     @NotBlank
     @Size(min = 4, max = 40)
     private String name;
-    
-    @NotBlank
-    @Size(min = 4, max = 40)
-    private String surname;
 
     @NotBlank
     @Size(min = 6, max = 20 , message = "debe ser minimo 6 maximo 20 caracteres")
@@ -39,14 +35,6 @@ public class UpdateUserRequest {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
 
     public String getPassword() {
         return password;
