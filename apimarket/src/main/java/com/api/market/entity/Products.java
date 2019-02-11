@@ -37,6 +37,8 @@ public class Products implements Serializable {
 	
 	private boolean outstanding;
 	
+	private boolean status;
+
 	@Column(length = 200)
 	private String image;
 	
@@ -105,6 +107,14 @@ public class Products implements Serializable {
 
 	public void setOutstanding(boolean outstanding) {
 		this.outstanding = outstanding;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 	
 }

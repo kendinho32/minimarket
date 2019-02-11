@@ -1,9 +1,8 @@
 package com.api.market.controller;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,12 +26,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.api.market.entity.Products;
+import com.api.market.entity.Usuario;
 import com.api.market.exception.ErrorNegocioException;
 import com.api.market.exception.ErrorTecnicoException;
 import com.api.market.payload.ApiResponse;
-import com.api.market.payload.ProductRequest;
+import com.api.market.payload.LoginRequest;
+import com.api.market.payload.SignUpRequest;
 import com.api.market.service.CategoriesService;
+import com.api.market.service.JpaUserDetailsService;
 import com.api.market.service.PublicService;
+import com.api.market.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -50,6 +53,12 @@ public class PublicController {
 	@Autowired
 	private PublicService publicService;
 	
+	@Autowired
+	private JpaUserDetailsService userDetailsService;
+	
+	@Autowired
+	private UserService userService;
+	
 	@GetMapping("/prueba")
 	public String prueba() {
 		logger.info("Se invoca al servicio Prueba para probar el API REST");
@@ -59,21 +68,43 @@ public class PublicController {
 	}
 	
 	/**
-	 * Metodo que se encarga de almacenar un producto dentro de la BD
+	 * Metodo que se encarga de registrar un usuario dentro de la BD con todas sus 
+	 * caracteristicas
 	 * 
-	 * @param request Objeto que contiene las caracteristicas del producto que se
-	 * 		desea almacenar en la BD
-	 * @return {@link ApiResponse} Objeto que contiene la respuesta del metodo rest
+	 * @param request
+	 * @return
+	 * @throws IOException
 	 */
-	@PostMapping("/register-product")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody ProductRequest request) throws ErrorNegocioException {
-		try {
-			ApiResponse response = publicService.createProduct(request);
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} catch(ErrorTecnicoException et) {
-            logger.error("No es posible guardar el producto");
-            throw new ErrorNegocioException("No es posible guardar el producto","SOL-0004",et);
-        }
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody SignUpRequest request) throws IOException {
+		
+		if (userDetailsService.verificarEmail(request.getEmail())) {
+			return new ResponseEntity(new ApiResponse(false, "El correo electronico ya se encuentra registrado!"), HttpStatus.BAD_REQUEST);
+		}
+		
+		Usuario user = userService.generateAndSaveUser(request);
+		ApiResponse response = new ApiResponse(true, "usuario registrado exitosamente!", user);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	/**
+	 * Metodo que se encarga de autenticar las credenciales de un usuario
+	 * 
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@PostMapping("/loginUser")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) throws IOException {
+		Usuario user = userDetailsService.verificarUser(request.getEmail(), request.getPassword());
+
+		if (user == null) {
+			return new ResponseEntity(new ApiResponse(false, "Usuario o contraseña inválidos!"), HttpStatus.UNAUTHORIZED);
+		}
+		
+		return new ResponseEntity<>(new ApiResponse(true, "usuario logeado exitosamente!", user), HttpStatus.OK);
 	}
 	
 	/**
@@ -106,25 +137,6 @@ public class PublicController {
 			throw new ErrorNegocioException("No es posible guardar el producto","SOL-0004",e);
         }
 		return new ResponseEntity<>(new ApiResponse(), HttpStatus.OK);
-	}
-	
-	/**
-	 * Metodo rest que se encarga de volcar la DATA de un file dentro de la BD en la columna
-	 * productos
-	 * 
-	 * @param file File que contiene la lista de productos que se desea guardar dentro de la BD
-	 * @return {@link ApiResponse} Objeto que contiene la respuesta de la ejecucion del metodo
-	 * @throws ErrorNegocioException
-	 */
-	@PostMapping("/update-inventario")
-	public ResponseEntity<?> updateInventario(@RequestParam("inventario") MultipartFile file) throws ErrorNegocioException {
-		try {
-			ApiResponse response = publicService.dumpData(file);
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} catch(ErrorTecnicoException et) {
-            logger.error("No es posible guardar la data en la BD");
-            throw new ErrorNegocioException("No es posible guardar el producto","SOL-0004",et);
-        }
 	}
 	
 	/**
@@ -186,5 +198,4 @@ public class PublicController {
             throw new ErrorNegocioException("No es posible recuperar el producto de la BD","SOL-0004",et);
         }
 	}
-
 }

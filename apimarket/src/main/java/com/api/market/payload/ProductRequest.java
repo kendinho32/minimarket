@@ -5,6 +5,8 @@ import javax.validation.constraints.Size;
 
 public class ProductRequest {
 	
+	private Long id;
+	
 	@NotBlank
     @Size(min = 4, max = 60)
     private String name;
@@ -21,6 +23,18 @@ public class ProductRequest {
     private String image;
     
     private Long categorieId;
+    
+    private boolean outstanding;
+    
+    private boolean status;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -68,6 +82,22 @@ public class ProductRequest {
 
 	public void setCategorieId(Long categorieId) {
 		this.categorieId = categorieId;
+	}
+
+	public boolean isOutstanding() {
+		return outstanding;
+	}
+
+	public void setOutstanding(boolean outstanding) {
+		this.outstanding = outstanding;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
 }
