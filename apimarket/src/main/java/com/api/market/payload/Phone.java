@@ -15,7 +15,7 @@ public class Phone {
 	
 	@NotBlank
     @Size(min = 4, max = 40)
-    private String contrycode;
+    private String countrycode;
 
 	public String getNumber() {
 		return number;
@@ -34,11 +34,11 @@ public class Phone {
 	}
 
 	public String getContrycode() {
-		return contrycode;
+		return countrycode;
 	}
 
 	public void setContrycode(String contrycode) {
-		this.contrycode = contrycode;
+		this.countrycode = contrycode;
 	}
 
 	
