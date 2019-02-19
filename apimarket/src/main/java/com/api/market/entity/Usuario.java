@@ -26,6 +26,7 @@ import javax.persistence.TemporalType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
@@ -46,6 +47,7 @@ public class Usuario implements Serializable {
 	@Column(length = 50, unique = true)
 	private String email;
 
+	@JsonIgnore
 	@Column(length = 60)
 	private String password;
 	

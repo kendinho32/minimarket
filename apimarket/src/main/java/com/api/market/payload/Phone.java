@@ -33,14 +33,12 @@ public class Phone {
 		this.citycode = citycode;
 	}
 
-	public String getContrycode() {
+	public String getCountrycode() {
 		return countrycode;
 	}
 
-	public void setContrycode(String contrycode) {
-		this.countrycode = contrycode;
-	}
-
-	
+	public void setCountrycode(String countrycode) {
+		this.countrycode = countrycode;
+	}	
 
 }

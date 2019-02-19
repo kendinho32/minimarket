@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
 			Phone phone = new Phone();
 			phone.setNumber(elemntPhone.getNumber());
 			phone.setCitycode(elemntPhone.getCitycode());
-			phone.setContrycode(elemntPhone.getContrycode());
+			phone.setContrycode(elemntPhone.getCountrycode());
 			
 			listPhones.add(phoneRepository.save(phone));
 		}
