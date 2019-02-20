@@ -33,6 +33,7 @@ import com.api.market.entity.Usuario;
 import com.api.market.exception.ErrorNegocioException;
 import com.api.market.exception.ErrorTecnicoException;
 import com.api.market.payload.ApiResponse;
+import com.api.market.payload.ContactRequest;
 import com.api.market.payload.LoginRequest;
 import com.api.market.payload.SignUpRequest;
 import com.api.market.service.CategoriesService;
@@ -232,5 +233,25 @@ public class PublicController {
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
 				.body(recurso);
+	}
+	
+	@PostMapping("/send-contact")
+	public ResponseEntity<?> sendContact(@RequestBody ContactRequest request) throws ErrorNegocioException {
+		ApiResponse response = new ApiResponse();
+		try {
+			boolean result = publicService.sendFormContact();
+			if(result) {
+				response.setSuccess(true);
+				response.setMessage("Formulario de contacto enviado satisfactoriamente...!");
+			} else {
+				response.setSuccess(false);
+				response.setMessage("Error al enviar el correo de  contacto...!");
+			}
+			
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible recuperar el producto de la BD");
+            throw new ErrorNegocioException("No es posible recuperar el producto de la BD","SOL-0004",et);
+        }
 	}
 }

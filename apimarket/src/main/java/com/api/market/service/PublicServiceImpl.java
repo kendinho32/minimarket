@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.api.market.entity.Categories;
 import com.api.market.entity.Products;
 import com.api.market.exception.ErrorTecnicoException;
+import com.api.market.util.UtilSendMail;
 
 @Service
 public class PublicServiceImpl implements PublicService {
@@ -16,6 +17,9 @@ public class PublicServiceImpl implements PublicService {
 	
 	@Autowired
 	private ProductsService productService;
+	
+	@Autowired
+	private UtilSendMail sendMail;
 
 	@Override
 	public List<?> getAllCategories() throws ErrorTecnicoException {
@@ -41,6 +45,11 @@ public class PublicServiceImpl implements PublicService {
 	@Override
 	public List<?> getAllProductsByStatus(boolean status) throws ErrorTecnicoException {
 		return productService.getAllProductsByStatus(status);
+	}
+
+	@Override
+	public boolean sendFormContact() throws ErrorTecnicoException {
+		return sendMail.sendEmail(null, null, null);
 	}
 
 }
