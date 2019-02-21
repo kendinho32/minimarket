@@ -239,7 +239,7 @@ public class PublicController {
 	public ResponseEntity<?> sendContact(@RequestBody ContactRequest request) throws ErrorNegocioException {
 		ApiResponse response = new ApiResponse();
 		try {
-			boolean result = publicService.sendFormContact();
+			boolean result = publicService.sendFormContact(request);
 			if(result) {
 				response.setSuccess(true);
 				response.setMessage("Formulario de contacto enviado satisfactoriamente...!");

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.api.market.entity.Categories;
 import com.api.market.entity.Products;
 import com.api.market.exception.ErrorTecnicoException;
+import com.api.market.payload.ContactRequest;
 import com.api.market.util.UtilSendMail;
 
 @Service
@@ -48,8 +49,8 @@ public class PublicServiceImpl implements PublicService {
 	}
 
 	@Override
-	public boolean sendFormContact() throws ErrorTecnicoException {
-		return sendMail.sendEmail(null, null, null);
+	public boolean sendFormContact(ContactRequest request) throws ErrorTecnicoException {
+		return sendMail.sendEmail(request);
 	}
 
 }
