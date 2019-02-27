@@ -110,7 +110,7 @@ public class ProductServiceImpl implements ProductsService {
 	}
 
 	@Override
-	public Optional<Products> getProductById(Long id) {
+	public Optional<Products> getProductById(Long id) throws ErrorTecnicoException {
 		return productDao.findById(id);
 	}
 

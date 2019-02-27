@@ -21,6 +21,6 @@ public interface ProductsService {
 	public List<?> getAllProductsByStatus(boolean status);
 	public List<?> getProductsByCategorie(Categories categorie);
 	public Products getProductByName(String name);
-	public Optional<Products> getProductById(Long id);
+	public Optional<Products> getProductById(Long id) throws ErrorTecnicoException;
 
 }
