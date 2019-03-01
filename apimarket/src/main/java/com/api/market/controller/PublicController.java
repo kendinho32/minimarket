@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +40,7 @@ import com.api.market.exception.ResourceNotFoundException;
 import com.api.market.payload.ApiResponse;
 import com.api.market.payload.ContactRequest;
 import com.api.market.payload.LoginRequest;
+import com.api.market.payload.ProductRequest;
 import com.api.market.payload.SignUpRequest;
 import com.api.market.service.CategoriesService;
 import com.api.market.service.IUploadFileService;
@@ -289,5 +292,24 @@ public class PublicController {
 			logger.error("No es posible encontrar el producto");
             throw new ErrorNegocioException("No es posible encontrar el producto","SOL-0004",e);
 		}
+	}
+	
+	/**
+	 * Metodo que se encarga de almacenar un producto dentro de la BD
+	 * 
+	 * @param request Objeto que contiene las caracteristicas del producto que se
+	 * 		desea almacenar en la BD
+	 * @return {@link ApiResponse} Objeto que contiene la respuesta del metodo rest
+	 */
+	@PutMapping("/update-product")
+	public ResponseEntity<?> updateProduct(@Valid @RequestBody Products request) throws ErrorNegocioException {
+		try {
+			ApiResponse response = productService.updateProduct(request);
+			response.setData(request);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible actualizar el producto");
+            throw new ErrorNegocioException("No es posible actualizar el producto","SOL-0004",et);
+        }
 	}
 }
