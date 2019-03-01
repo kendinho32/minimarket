@@ -40,7 +40,6 @@ import com.api.market.exception.ResourceNotFoundException;
 import com.api.market.payload.ApiResponse;
 import com.api.market.payload.ContactRequest;
 import com.api.market.payload.LoginRequest;
-import com.api.market.payload.ProductRequest;
 import com.api.market.payload.SignUpRequest;
 import com.api.market.service.CategoriesService;
 import com.api.market.service.IUploadFileService;
