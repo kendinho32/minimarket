@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -139,19 +138,19 @@ public class ProductController {
 	 * 		desea almacenar en la BD
 	 * @return {@link ApiResponse} Objeto que contiene la respuesta del metodo rest
 	 */
-	@PutMapping("/update-product/{id}")
-	public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductRequest request, @PathVariable("id") Long id) throws ErrorNegocioException {
+	
+	/**
+	 * Metodo que se encarga de almacenar un producto dentro de la BD
+	 * 
+	 * @param request Objeto que contiene las caracteristicas del producto que se
+	 * 		desea almacenar en la BD
+	 * @return {@link ApiResponse} Objeto que contiene la respuesta del metodo rest
+	 */
+	@PostMapping("/update-product")
+	public ResponseEntity<?> updateProduct(@Valid @RequestBody Products request) throws ErrorNegocioException {
 		try {
-			Products product = productService.getProductById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
-			product.setName(request.getName());
-			product.setDescription(request.getDescription());
-			product.setPrice(request.getPrice());
-			product.setQuantity(request.getQuantity());
-			product.setOutstanding(request.isOutstanding());
-			product.setStatus(request.isStatus());
-			
-			ApiResponse response = productService.updateProduct(product);
-			response.setData(product);
+			ApiResponse response = productService.updateProduct(request);
+			response.setData(request);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch(ErrorTecnicoException et) {
             logger.error("No es posible actualizar el producto");

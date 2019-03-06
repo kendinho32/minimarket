@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import com.api.market.filter.JWTAuthenticationFilter;
 import com.api.market.filter.JWTAuthorizationFilter;
 import com.api.market.service.JWTService;

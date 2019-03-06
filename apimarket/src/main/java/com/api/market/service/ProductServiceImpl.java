@@ -118,7 +118,7 @@ public class ProductServiceImpl implements ProductsService {
 	public ApiResponse updateProduct(Products product) throws ErrorTecnicoException {
 		ApiResponse response = new ApiResponse(false, null);
 		productDao.save(product);
-		response.setMessage("Producto almacenado con exito");
+		response.setMessage("Producto actualizado con exito");
 		response.setSuccess(true);
 		
 		return response;
