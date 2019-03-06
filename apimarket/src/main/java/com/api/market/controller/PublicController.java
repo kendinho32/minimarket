@@ -264,21 +264,9 @@ public class PublicController {
         }
 	}
 	
-	@GetMapping("/get-product/{id}/user/{idUser}")
-	public ResponseEntity<?> getProductById(@PathVariable("id") Long id, @PathVariable("idUser") Long idUser, HttpServletRequest servletRequest) throws ErrorNegocioException {		
+	@GetMapping("/get-product/{id}")
+	public ResponseEntity<?> getProductById(@PathVariable("id") Long id) throws ErrorNegocioException {		
 		try {
-			Usuario user = userService.getUsuario(idUser);
-			
-			if (user == null) {
-				return new ResponseEntity<>(new ApiResponse(false, "El usuario no existe!"), HttpStatus.BAD_REQUEST);
-			}
-			String[] header = servletRequest.getHeader(JWTServiceImpl.HEADER_STRING).split(" ");
-			
-			// Verifico que el token corresponda al usuario
-			if(!userService.verificarToken(user, header[1])) {
-				return new ResponseEntity<>(new ApiResponse(false, "El token no corresponde al usuario!"), HttpStatus.UNAUTHORIZED);
-			}
-			
 			Products product = productService.getProductById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
 			
 			if (product == null) {
@@ -309,5 +297,50 @@ public class PublicController {
             logger.error("No es posible actualizar el producto");
             throw new ErrorNegocioException("No es posible actualizar el producto","SOL-0004",et);
         }
+	}
+	
+	/**
+	 * Metodo que se encarga de salvar la foto del producto dentro del proyecto
+	 * 
+	 * @param foto Archivo que representa la foto del producto
+	 * @param id   Identificador que representa el registro del producto dentro de la
+	 *             base de datos
+	 * @return <ApiResponse> Objeto que contiene la respuesta del servicio de exito
+	 *         o fracaso
+	 * @throws ErrorTecnicoException 
+	 */
+	@PostMapping("/savePicture/{id}")
+	public ResponseEntity<?> savePicture(@Valid @RequestParam("picture") MultipartFile foto, @PathVariable("id") Long id) throws ErrorTecnicoException {
+		logger.info("Se invoca el metodo savePicture, para almacenar la foto del producto");
+		String name = foto.getOriginalFilename();
+		String[] propiedadesNombre = name.replace(".", "-").split("-");
+		ApiResponse api = null;
+
+		if (propiedadesNombre[1].equalsIgnoreCase("jpg") || propiedadesNombre[1].equalsIgnoreCase("png")
+				|| propiedadesNombre[1].equalsIgnoreCase("jpge")) {
+			Products product = productService.getProductById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
+
+			// Elimino la foto anterior
+			if (product.getImage() != null) {
+				uploadFileService.delete(product.getImage());
+			}
+
+			String uniqueFilename = null;
+			try {
+				uniqueFilename = uploadFileService.copy(foto);
+			} catch (IOException e) {
+				logger.error("Error --> ", e);
+			}
+
+			product.setImage(uniqueFilename);
+			productService.updateProduct(product);
+
+			logger.info("Picture save successfully");
+			api = new ApiResponse(true, "Picture save successfully", product);
+		} else {
+			logger.info("Extension no valida");
+			api = new ApiResponse(false, "Extension no valida");
+		}
+		return new ResponseEntity<>(api, HttpStatus.OK);
 	}
 }
