@@ -98,6 +98,11 @@ public class ProductServiceImpl implements ProductsService {
 	public List<?> getAllProducts() {
 		return (List<?>) productDao.findAll();
 	}
+	
+	@Override
+	public List<?> getAllProductsRecommended() {
+		return (List<?>) productDao.findAllProductsByOutstanding(true);
+	}
 
 	@Override
 	public List<?> getProductsByCategorie(Categories categorie) {

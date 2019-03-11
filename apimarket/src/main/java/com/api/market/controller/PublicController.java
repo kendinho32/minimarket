@@ -199,6 +199,24 @@ public class PublicController {
         }
 	}
 	
+	/**
+	 * Metodo que se encarga de recuperar todos los productos registrados dentro de la BD
+	 * 
+	 * @return {@link ApiResponse} Objeto que contiene la respuesta de la ejecucion del metodo
+	 * @throws ErrorNegocioException
+	 */
+	@GetMapping("/get-all-products-recommended")
+	public ResponseEntity<?> getAllProductsRecommended() throws ErrorNegocioException {
+		try {
+			List<?> listProducts = publicService.getAllProductsRecommended();
+			ApiResponse response = new ApiResponse(true, "Productos recuperados exitosamente...!", listProducts);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible recuperar la lista de categorias de la BD");
+            throw new ErrorNegocioException("No es posible recuperar la lista de categorias de la BD","SOL-0004",et);
+        }
+	}
+	
 	@GetMapping("/get-products-by-categorie/{idCategorie}")
 	public ResponseEntity<?> getAllProductsByCategorie(@PathVariable(value = "idCategorie") Long id) throws ErrorNegocioException {
 		try {

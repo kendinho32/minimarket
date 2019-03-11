@@ -10,6 +10,7 @@ public interface PublicService {
 	
 	public List<?> getAllCategories() throws ErrorTecnicoException;
 	public List<?> getAllProducts() throws ErrorTecnicoException;
+	public List<?> getAllProductsRecommended() throws ErrorTecnicoException;
 	public List<?> getAllProductsByStatus(boolean status) throws ErrorTecnicoException;
 	public List<?> getProductsByCategorie(Long id) throws ErrorTecnicoException;
 	public Products getProductByName(String name) throws ErrorTecnicoException;

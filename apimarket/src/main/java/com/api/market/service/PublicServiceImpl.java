@@ -31,6 +31,11 @@ public class PublicServiceImpl implements PublicService {
 	public List<?> getAllProducts() throws ErrorTecnicoException {
 		return productService.getAllProducts();
 	}
+	
+	@Override
+	public List<?> getAllProductsRecommended() throws ErrorTecnicoException {
+		return productService.getAllProductsRecommended();
+	}
 
 	@Override
 	public List<?> getProductsByCategorie(Long id) throws ErrorTecnicoException {
