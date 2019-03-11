@@ -18,6 +18,7 @@ public interface ProductsService {
 	public ApiResponse dumpData(MultipartFile file) throws ErrorTecnicoException;
 	public void savedAll(List<?> products);
 	public List<?> getAllProducts();
+	public List<?> getAllProductsRecommended();
 	public List<?> getAllProductsByStatus(boolean status);
 	public List<?> getProductsByCategorie(Categories categorie);
 	public Products getProductByName(String name);

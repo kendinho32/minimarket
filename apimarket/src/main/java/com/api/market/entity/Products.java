@@ -35,6 +35,8 @@ public class Products implements Serializable {
 	
 	private float quantity;
 	
+	private float quantitySelect;
+	
 	private boolean outstanding;
 	
 	private boolean status;
@@ -83,6 +85,14 @@ public class Products implements Serializable {
 
 	public void setQuantity(float quantity) {
 		this.quantity = quantity;
+	}
+	
+	public float getQuantitySelect() {
+		return quantitySelect;
+	}
+
+	public void setQuantitySelect(float quantitySelect) {
+		this.quantitySelect = quantitySelect;
 	}
 
 	public String getImage() {
