@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +30,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.api.market.entity.Cart;
 import com.api.market.entity.Products;
+import com.api.market.entity.ProductsCart;
 import com.api.market.entity.Usuario;
 import com.api.market.exception.ErrorNegocioException;
 import com.api.market.exception.ErrorTecnicoException;
@@ -40,11 +41,12 @@ import com.api.market.payload.ApiResponse;
 import com.api.market.payload.ContactRequest;
 import com.api.market.payload.LoginRequest;
 import com.api.market.payload.SignUpRequest;
+import com.api.market.service.CartService;
 import com.api.market.service.CategoriesService;
 import com.api.market.service.IUploadFileService;
 import com.api.market.service.JWTService;
-import com.api.market.service.JWTServiceImpl;
 import com.api.market.service.JpaUserDetailsService;
+import com.api.market.service.ProductsCartService;
 import com.api.market.service.ProductsService;
 import com.api.market.service.PublicService;
 import com.api.market.service.UserService;
@@ -76,6 +78,12 @@ public class PublicController {
 	
 	@Autowired
 	private ProductsService productService;
+	
+	@Autowired
+	private ProductsCartService productCartService;
+	
+	@Autowired
+	private CartService cartService;
 	
 	@Autowired
 	private IUploadFileService uploadFileService;
@@ -360,5 +368,22 @@ public class PublicController {
 			api = new ApiResponse(false, "Extension no valida");
 		}
 		return new ResponseEntity<>(api, HttpStatus.OK);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@PostMapping("/sendOrder")
+	public ResponseEntity<?> sendOrder(@RequestBody Cart request) throws ErrorNegocioException {
+		ApiResponse response = new ApiResponse();
+		try {
+			request.setProducts((List<ProductsCart>) productCartService.savedAllProducts(request.getProducts()));
+			Cart cart = cartService.savedOrder(request);
+			response.setSuccess(true);
+			response.setMessage("Orden ejecutada exitosamente...!");
+			response.setData(cart);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible almacenar la orden");
+            throw new ErrorNegocioException("No es posible almacenar la orden","SOL-0004",et);
+        }
 	}
 }
