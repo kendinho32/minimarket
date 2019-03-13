@@ -71,6 +71,12 @@
 			<artifactId>opencsv</artifactId>
 			<version>3.8</version>
 		</dependency>
+		<!-- J2HTML -->
+		<dependency>
+	        <groupId>com.j2html</groupId>
+	        <artifactId>j2html</artifactId>
+	        <version>1.0.0</version>
+	    </dependency>
 	</dependencies>
 
 	<build>

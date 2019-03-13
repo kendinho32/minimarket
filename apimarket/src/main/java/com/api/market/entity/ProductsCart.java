@@ -25,7 +25,7 @@ public class ProductsCart implements Serializable {
 	@Column(name = "id")
 	private Long id;
 	
-	@Column(length = 60, unique = true)
+	@Column(length = 160)
 	private String name;
 	
 	@Column(length = 250)
@@ -35,7 +35,7 @@ public class ProductsCart implements Serializable {
 	
 	private float quantity;
 	
-	private float quantitySelect;
+	private Long quantitySelect;
 	
 	private boolean outstanding;
 	
@@ -87,11 +87,11 @@ public class ProductsCart implements Serializable {
 		this.quantity = quantity;
 	}
 	
-	public float getQuantitySelect() {
+	public Long getQuantitySelect() {
 		return quantitySelect;
 	}
 
-	public void setQuantitySelect(float quantitySelect) {
+	public void setQuantitySelect(Long quantitySelect) {
 		this.quantitySelect = quantitySelect;
 	}
 

@@ -1,6 +1,7 @@
 package com.api.market.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "cart")
@@ -34,6 +42,9 @@ public class Cart implements Serializable {
 	@Column(length = 30)
 	private String tipo;
 	
+	@Column(length = 30)
+	private String pago;
+	
 	private Long shipping;
 	
 	private Long total;
@@ -42,9 +53,27 @@ public class Cart implements Serializable {
 	@JoinTable(name = "cart_products", joinColumns = @JoinColumn(name = "id_cart"), inverseJoinColumns = @JoinColumn(name = "id_product"))
 	private List<ProductsCart> products;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "cart_id")
 	private Direccion direccion;
+	
+	private String status;
+	
+	@Column(name = "create_at")
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
+	@JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
+	private Date created;
+	
+	@PrePersist
+	public void prePersist() {
+		created = new Date();
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
+	@JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
+	private Date modified;
 
 	public Long getId() {
 		return id;
@@ -68,6 +97,14 @@ public class Cart implements Serializable {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getPago() {
+		return pago;
+	}
+
+	public void setPago(String pago) {
+		this.pago = pago;
 	}
 
 	public Long getShipping() {
@@ -100,6 +137,30 @@ public class Cart implements Serializable {
 
 	public void setDireccion(Direccion direccion) {
 		this.direccion = direccion;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public Date getModified() {
+		return modified;
+	}
+
+	public void setModified(Date modified) {
+		this.modified = modified;
 	}
 
 }

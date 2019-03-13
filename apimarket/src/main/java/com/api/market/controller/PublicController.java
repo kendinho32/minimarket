@@ -50,6 +50,7 @@ import com.api.market.service.ProductsCartService;
 import com.api.market.service.ProductsService;
 import com.api.market.service.PublicService;
 import com.api.market.service.UserService;
+import com.api.market.util.UtilSendMail;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -87,6 +88,9 @@ public class PublicController {
 	
 	@Autowired
 	private IUploadFileService uploadFileService;
+	
+	@Autowired
+	private UtilSendMail sendMail;
 	
 	@GetMapping("/prueba")
 	public String prueba() {
@@ -377,6 +381,12 @@ public class PublicController {
 		try {
 			request.setProducts((List<ProductsCart>) productCartService.savedAllProducts(request.getProducts()));
 			Cart cart = cartService.savedOrder(request);
+			
+			// se envia el correo a la tienda
+			sendMail.sendOrderStore(request);
+			// se envia el correo al usuario
+			sendMail.sendOrderUser(request);
+			
 			response.setSuccess(true);
 			response.setMessage("Orden ejecutada exitosamente...!");
 			response.setData(cart);
@@ -384,6 +394,22 @@ public class PublicController {
 		} catch(ErrorTecnicoException et) {
             logger.error("No es posible almacenar la orden");
             throw new ErrorNegocioException("No es posible almacenar la orden","SOL-0004",et);
+        }
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping("/get-orders-user/{id}")
+	public ResponseEntity<?> getOrdersByUser(@PathVariable("id") Long id) throws ErrorNegocioException {
+		ApiResponse response = new ApiResponse();
+		try {
+			List<Cart> carts = (List<Cart>) cartService.getOrdersByUser(id);			
+			response.setSuccess(true);
+			response.setMessage("Ordenes recuperadas exitosamente...!");
+			response.setData(carts);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible recuperar las ordenes");
+            throw new ErrorNegocioException("No es posible recuperar las ordenes","SOL-0004",et);
         }
 	}
 }

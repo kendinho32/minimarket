@@ -1,5 +1,7 @@
 package com.api.market.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,11 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public Cart savedOrder(Cart request) throws ErrorTecnicoException {
 		return cartRepository.save(request);
+	}
+
+	@Override
+	public List<?> getOrdersByUser(Long id) throws ErrorTecnicoException {
+		return cartRepository.findAllCartsByIdUsuario(id);
 	}
 
 }

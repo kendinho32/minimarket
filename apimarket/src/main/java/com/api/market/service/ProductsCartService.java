@@ -7,6 +7,6 @@ import com.api.market.exception.ErrorTecnicoException;
 
 public interface ProductsCartService {
 	
-	public List<?> savedAllProducts(List<ProductsCart> list) throws ErrorTecnicoException;;
+	public List<?> savedAllProducts(List<ProductsCart> list) throws ErrorTecnicoException;
 
 }
