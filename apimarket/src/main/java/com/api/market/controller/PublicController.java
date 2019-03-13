@@ -382,8 +382,8 @@ public class PublicController {
 			request.setProducts((List<ProductsCart>) productCartService.savedAllProducts(request.getProducts()));
 			// busco el usuario que crea la orden
 			Usuario user = userService.getUsuario(idUsuario);
+			request.setUsuario(user);
 			Cart cart = cartService.savedOrder(request);
-			cart.setUsuario(user);
 			
 			// se envia el correo a la tienda
 			sendMail.sendOrderStore(request);
