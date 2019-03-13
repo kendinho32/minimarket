@@ -19,14 +19,11 @@ import static j2html.TagCreator.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.api.market.entity.Cart;
-import com.api.market.entity.Usuario;
 import com.api.market.payload.ContactRequest;
-import com.api.market.service.UserService;
 
 @Component
 public class UtilSendMail {
@@ -46,9 +43,6 @@ public class UtilSendMail {
 	
 	@Value("${gmail.user.password}")
 	private String gmailPassword;
-	
-	@Autowired
-	private UserService userService;
 	
 	/**
 	 * Utility method to send simple HTML email
@@ -106,9 +100,6 @@ public class UtilSendMail {
 		boolean response = false;
 		String destinations = new StringBuilder().append(gmailAccount).toString();
 		
-		// busco el usuario que creo la orden de compra
-		Usuario user =userService.getUsuario(cart.getIdUsuario());
-		
 		Properties props = propertiesServerMail();
 		final String[] emailDestinations = destinations.split(";");
  
@@ -128,7 +119,7 @@ public class UtilSendMail {
 			
 			StringBuilder html = new StringBuilder();
 			StringBuilder msj = new StringBuilder();
-			msj.append("Se ha realizado una nueva orden por el usuario: " + user.getName() + ". ")
+			msj.append("Se ha realizado una nueva orden por el usuario: " + cart.getUsuario().getName() + ". ")
 			.append("A continuación te mostramos un detalle de la compra realizada: ");
 
 			try {
@@ -149,10 +140,10 @@ public class UtilSendMail {
 				                h1("Datos del usuario").with(
 				        				br()
 				        		),
-				        		p("Correo del usuario: " + user.getEmail()).with(
+				        		p("Correo del usuario: " + cart.getUsuario().getEmail()).with(
 			                			br()
 			                	),
-				        		p("Télefono de contacto: " + user.getPhones().get(0).getContrycode() + user.getPhones().get(0).getCitycode() + user.getPhones().get(0).getNumber()).with(
+				        		p("Télefono de contacto: " + cart.getUsuario().getPhones().get(0).getContrycode() + cart.getUsuario().getPhones().get(0).getCitycode() + cart.getUsuario().getPhones().get(0).getNumber()).with(
 			                			br()
 			                	),
 				                div(attrs("#employees"),
@@ -223,10 +214,7 @@ public class UtilSendMail {
 		logger.info("Se ejecuta el metodo para el envio de correo para la tienda");
 		boolean response = false;
 		
-		// busco el usuario que creo la orden de compra
-		Usuario user = userService.getUsuario(cart.getIdUsuario());
-		
-		String destinations = new StringBuilder().append(user.getEmail()).toString();
+		String destinations = new StringBuilder().append(cart.getUsuario().getEmail()).toString();
 		
 		Properties props = propertiesServerMail();
 		final String[] emailDestinations = destinations.split(";");

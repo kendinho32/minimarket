@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.market.dao.CartDao;
 import com.api.market.entity.Cart;
+import com.api.market.entity.Usuario;
 import com.api.market.exception.ErrorTecnicoException;
 
 @Service
@@ -21,8 +22,8 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public List<?> getOrdersByUser(Long id) throws ErrorTecnicoException {
-		return cartRepository.findAllCartsByIdUsuario(id);
+	public List<?> getOrdersByUser(Usuario usuario) throws ErrorTecnicoException {
+		return cartRepository.findAllCartsByUsuario(usuario);
 	}
 
 }

@@ -375,12 +375,15 @@ public class PublicController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@PostMapping("/sendOrder")
-	public ResponseEntity<?> sendOrder(@RequestBody Cart request) throws ErrorNegocioException {
+	@PostMapping("/sendOrder/{idUsuario}")
+	public ResponseEntity<?> sendOrder(@RequestBody Cart request, @PathVariable("idUsuario") Long idUsuario) throws ErrorNegocioException {
 		ApiResponse response = new ApiResponse();
 		try {
 			request.setProducts((List<ProductsCart>) productCartService.savedAllProducts(request.getProducts()));
+			// busco el usuario que crea la orden
+			Usuario user = userService.getUsuario(idUsuario);
 			Cart cart = cartService.savedOrder(request);
+			cart.setUsuario(user);
 			
 			// se envia el correo a la tienda
 			sendMail.sendOrderStore(request);
@@ -402,7 +405,8 @@ public class PublicController {
 	public ResponseEntity<?> getOrdersByUser(@PathVariable("id") Long id) throws ErrorNegocioException {
 		ApiResponse response = new ApiResponse();
 		try {
-			List<Cart> carts = (List<Cart>) cartService.getOrdersByUser(id);			
+			Usuario user = userService.getUsuario(id);
+			List<Cart> carts = (List<Cart>) cartService.getOrdersByUser(user);			
 			response.setSuccess(true);
 			response.setMessage("Ordenes recuperadas exitosamente...!");
 			response.setData(carts);
