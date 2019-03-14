@@ -129,7 +129,7 @@ public class UtilSendMail {
 				        ),
 				        body(
 				        		h1("Orden de Compra realizada"),
-				                img().withSrc("https://josefacchin.com/wp-content/uploads/2016/07/Montar-tienda-online-2-610x305.png"),
+				                img().withSrc("https://www.baffler.mx/images/baff%20siteartboard%2039.png?crc=62544678"),
 				                div(attrs("#resumen"),
 				                	p().with(
 				                			h2(
@@ -178,7 +178,13 @@ public class UtilSendMail {
 					                        	      		h2("Total Compra: " + (cart.getTotal().intValue() + cart.getShipping().intValue()))
 					                        	      	)
 						                        	)
-					                        )
+					                        ),
+				                        	h1("Tipo de Despacho: " + cart.getTipo()).with(
+							        				br()
+							        		),
+							        		p("Dirección Seleccionada: " + cart.getDireccion() != null ? new StringBuilder().append(cart.getDireccion().getComuna()).append(" ").append(cart.getDireccion().getCalle()).append(" ").append(cart.getDireccion().getNro()).toString() : "").with(
+						                			br()
+						                	)	                   
 				                        )				                        
 				                    )
 				        ) // close body
@@ -288,6 +294,9 @@ public class UtilSendMail {
 					                        )
 				                        )				                        
 				                    ),
+		                        	h1("Tipo de Despacho: " + cart.getTipo()).with(
+					        				br()
+					        		),
 				                	div(attrs("#resumen2"),
 				                		p("El metodo de pago seleccionado por ti fue: ").with(h2(cart.getPago())),
 					                	p().with(

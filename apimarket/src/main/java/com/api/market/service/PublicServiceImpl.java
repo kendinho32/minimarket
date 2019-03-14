@@ -44,7 +44,7 @@ public class PublicServiceImpl implements PublicService {
 	}
 
 	@Override
-	public Products getProductByName(String name) throws ErrorTecnicoException {
+	public List<?> getProductByName(String name) throws ErrorTecnicoException {
 		return productService.getProductByName(name);
 	}
 

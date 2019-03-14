@@ -110,7 +110,7 @@ public class ProductServiceImpl implements ProductsService {
 	}
 
 	@Override
-	public Products getProductByName(String name) {
+	public List<?> getProductByName(String name) {
 		return productDao.findProductsByName(name);
 	}
 

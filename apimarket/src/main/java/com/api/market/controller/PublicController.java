@@ -244,7 +244,7 @@ public class PublicController {
 	@GetMapping("/get-product-by-name/{name}")
 	public ResponseEntity<?> getProductByName(@PathVariable(value = "name") String name) throws ErrorNegocioException {
 		try {
-			Products products = publicService.getProductByName(name);
+			List<?> products = publicService.getProductByName(name);
 			ApiResponse response = new ApiResponse(true, "Producto recuperado exitosamente...!", products);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch(ErrorTecnicoException et) {
