@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>apimarket</name>
 	<description>Proyecto que contiene el api para la app del mini market</description>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
