@@ -14,10 +14,6 @@
 	<name>apimarket</name>
 	<description>Proyecto que contiene el api para la app del mini market</description>
 
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
