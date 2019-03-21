@@ -33,6 +33,8 @@ public class Slider implements Serializable {
 	
 	@Column(length = 200)
 	private String imagePrice;
+	
+	private boolean status;
 
 	public Long getId() {
 		return id;
@@ -72,6 +74,14 @@ public class Slider implements Serializable {
 
 	public void setImagePrice(String imagePrice) {
 		this.imagePrice = imagePrice;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
 }
