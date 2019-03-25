@@ -1,6 +1,7 @@
 package com.api.market.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -8,6 +9,8 @@ import javax.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,5 +105,20 @@ public class SliderController {
 			api = new ApiResponse(false, "Extension no valida");
 		}
 		return new ResponseEntity<>(api, HttpStatus.OK);
+	}
+	
+	@GetMapping("/get-picture-slider/{filename:.+}")
+	public ResponseEntity<Resource> getPicture(@PathVariable String filename) {
+		Resource recurso = null;
+
+		try {
+			recurso = uploadFileService.loadSliderImg(filename);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
+				.body(recurso);
 	}
 }

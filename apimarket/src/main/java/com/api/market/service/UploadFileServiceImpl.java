@@ -48,6 +48,24 @@ public class UploadFileServiceImpl implements IUploadFileService {
 		
 		return recurso;
 	}
+	
+	/**
+	 * Metodo que se encarga de cargar una imagen a traves del nombre recibido
+	 * 
+	 */
+	@Override
+	public Resource loadSliderImg(String filename) throws MalformedURLException {
+		Path pathFoto = getPathSliderImg(filename);
+		log.info("pathFoto: " + pathFoto);
+
+		Resource recurso = new UrlResource(pathFoto.toUri());
+
+		if (!recurso.exists() || !recurso.isReadable()) {
+			throw new RuntimeException("Error: no se puede cargar la imagen: " + pathFoto.toString());
+		}
+		
+		return recurso;
+	}
 
 	/**
 	 * Metodo que se encarga de copiar una imagen en el directorio especificado

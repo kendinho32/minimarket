@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IUploadFileService {
 	
 	public Resource loadImg(String filename) throws MalformedURLException;
+	public Resource loadSliderImg(String filename) throws MalformedURLException;
 	public String copy(MultipartFile file) throws IOException;
 	public String copyImgSlider(MultipartFile file) throws IOException;
 	public boolean delete(String filename);
