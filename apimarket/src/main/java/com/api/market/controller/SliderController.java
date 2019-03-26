@@ -54,6 +54,18 @@ public class SliderController {
         }
 	}
 	
+	@GetMapping("/get-slider/{id}")
+	public ResponseEntity<?> getSlider(@PathVariable("id") Long id) throws ErrorNegocioException {
+		try {
+			Slider slider = sliderService.getSliderById(id).orElseThrow(() -> new ResourceNotFoundException("Slider", "id", id));
+			ApiResponse response = new ApiResponse(true, "Slider recuperado exitosamente...!", slider);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(ErrorTecnicoException et) {
+            logger.error("No es posible recuperar el slider de la BD");
+            throw new ErrorNegocioException("No es posible recuperar el slider de la BD","SOL-0004",et);
+        }
+	}
+	
 	@PostMapping("/save-slider")
 	public ResponseEntity<?> saveSlider(@Valid @RequestBody Slider request) throws ErrorNegocioException {
 		try {
