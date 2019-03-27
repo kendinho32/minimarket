@@ -115,7 +115,7 @@ public class UtilSendMail {
 				                		each(filter(cart.getProducts(), product -> product != null), product ->
 				                        	tr().with(
 				                        			td().with(
-				                        				img().withSrc(product.getImage())
+				                        				img().withSrc(new StringBuilder().append("https://mini-market2019.herokuapp.com/api/auth/get-picture-product/").append(product.getImage()).toString())
 					                        	     ),
 					                        	     td().with(
 					                        	    	h2(product.getName())
