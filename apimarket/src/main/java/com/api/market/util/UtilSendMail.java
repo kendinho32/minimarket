@@ -38,6 +38,9 @@ public class UtilSendMail {
 	@Value("${api.key.send.mail}")
 	private String apiKeySendMail;
 	
+	@Value("${api.url.from.img}")
+	private String urlFromImg;
+	
 	/**
 	 * Utility method to send simple HTML email
 	 * @param session
@@ -115,7 +118,7 @@ public class UtilSendMail {
 				                		each(filter(cart.getProducts(), product -> product != null), product ->
 				                        	tr().with(
 				                        			td().with(
-				                        				img().withSrc(product.getImage())
+				                        				img().withSrc(new StringBuilder().append(urlFromImg).append(product.getImage()).toString())
 					                        	     ),
 					                        	     td().with(
 					                        	    	h2(product.getName())
@@ -206,7 +209,7 @@ public class UtilSendMail {
 				                		each(filter(cart.getProducts(), product -> product != null), product ->
 				                        	tr().with(
 				                        			td().with(
-				                        				img().withSrc(product.getImage())
+				                        				img().withSrc(new StringBuilder().append(urlFromImg).append(product.getImage()).toString())
 					                        	     ),
 					                        	     td().with(
 					                        	    	h2(product.getName())
