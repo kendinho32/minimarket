@@ -1,20 +1,6 @@
 package com.api.market.util;
 
 import java.io.IOException;
-import java.util.Properties;
-
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
 import static j2html.TagCreator.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,13 +10,18 @@ import org.springframework.stereotype.Component;
 
 import com.api.market.entity.Cart;
 import com.api.market.payload.ContactRequest;
+import com.sendgrid.Content;
+import com.sendgrid.Email;
+import com.sendgrid.Mail;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
 
 @Component
 public class UtilSendMail {
 	
 	private static final Logger logger = LogManager.getLogger(UtilSendMail.class);
-	
-	private static final String AUTH_MAIL = "true";
 	
 	@Value("${gmail.smtp.host}")
 	private String gmailSMTPHost;
@@ -44,6 +35,9 @@ public class UtilSendMail {
 	@Value("${gmail.user.password}")
 	private String gmailPassword;
 	
+	@Value("${api.key.send.mail}")
+	private String apiKeySendMail;
+	
 	/**
 	 * Utility method to send simple HTML email
 	 * @param session
@@ -53,43 +47,27 @@ public class UtilSendMail {
 	 */
 	public boolean sendEmail(ContactRequest request){
 		logger.info("Se ejecuta el metodo para el envio de correo");
-		boolean response = false;
-		String destinations = new StringBuilder().append(gmailAccount).append(";").append(request.getEmail()).toString();
+		Email from = new Email("dulceregalokye@gmail.com");
+	    String subject = new StringBuilder().append("Formulario Contacto - ").append(request.getSubject()).toString();
+	    Email to = new Email(new StringBuilder().append(gmailAccount).append(";").append(request.getEmail()).toString());
 		
-		Properties props = propertiesServerMail();
-		final String[] emailDestinations = destinations.split(";");
- 
-		Session session = setSessionServerMail(props, gmailAccount, gmailPassword);
-		
+		boolean response = false;		
 		try {
-			 
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(gmailAccount));
+			Content content = new Content("text/html", new StringBuilder().append("<strong>").append(request.getMessage()).append("</strong>").toString());
+			Mail mail = new Mail(from, subject, to, content);
 			
-			for (String emailDestination : emailDestinations) {
-				message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(emailDestination));
-			}
- 
-			message.setSubject(new StringBuilder().append("Formulario Contacto - ").append(request.getSubject()).toString());
- 
-			BodyPart messageBodyPart = new MimeBodyPart();
-			messageBodyPart.setContent(new StringBuilder().append("<strong>").append(request.getMessage()).append("</strong>").toString(),
-					"text/html; charset=utf-8");
+			SendGrid sg = new SendGrid(apiKeySendMail);
+		    Request req = new Request();
 			
-			Multipart multipart = new MimeMultipart();
-			
-			//Setting email text message
-			multipart.addBodyPart(messageBodyPart);
- 
-			//set the attachments to the email
-	        message.setContent(multipart);
- 
-	        Transport transport = session.getTransport("smtp");
-	        transport.connect("smtp.gmail.com", gmailAccount, gmailPassword);
-	        transport.sendMessage(message, message.getAllRecipients());
-	        transport.close();
-			response = true;
-		} catch (MessagingException e) {
+		    req.setMethod(Method.POST);
+		    req.setEndpoint("mail/send");
+		    req.setBody(mail.build());
+		    Response res = sg.api(req);
+		    
+		    if(res.getStatusCode() == 202) {
+		    	response = true;
+		    }
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return response;
@@ -97,30 +75,15 @@ public class UtilSendMail {
 	
 	public boolean sendOrderStore(Cart cart){
 		logger.info("Se ejecuta el metodo para el envio de correo para la tienda");
+		Email from = new Email(gmailAccount);
+	    String subject = new StringBuilder().append("Orden de Compra Realizada").toString();
 		boolean response = false;
-		String destinations = new StringBuilder().append(gmailAccount).toString();
-		
-		Properties props = propertiesServerMail();
-		final String[] emailDestinations = destinations.split(";");
- 
-		Session session = setSessionServerMail(props, gmailAccount, gmailPassword);
-		
-		try {
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(gmailAccount));
-			
-			for (String emailDestination : emailDestinations) {
-				message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(emailDestination));
-			}
- 
-			message.setSubject(new StringBuilder().append("Orden de Compra Realizada").toString());
- 
-			BodyPart messageBodyPart = new MimeBodyPart();
-			
-			StringBuilder html = new StringBuilder();
-			StringBuilder msj = new StringBuilder();
-			msj.append("Se ha realizado una nueva orden por el usuario: " + cart.getUsuario().getName() + ". ")
-			.append("A continuación te mostramos un detalle de la compra realizada: ");
+		Email to = new Email(gmailAccount);
+					
+		StringBuilder html = new StringBuilder();
+		StringBuilder msj = new StringBuilder();
+		msj.append("Se ha realizado una nueva orden por el usuario: " + cart.getUsuario().getName() + ". ")
+		   .append("A continuación te mostramos un detalle de la compra realizada: ");
 
 			try {
 				html(
@@ -189,58 +152,36 @@ public class UtilSendMail {
 				                    )
 				        ) // close body
 				).render(html);
+				Content content = new Content("text/html", html.toString());
+				Mail mail = new Mail(from, subject, to, content);
+				
+				SendGrid sg = new SendGrid(apiKeySendMail);
+			    Request req = new Request();
+				
+			    req.setMethod(Method.POST);
+			    req.setEndpoint("mail/send");
+			    req.setBody(mail.build());
+			    Response res = sg.api(req);
+			    
+			    if(res.getStatusCode() == 202) {
+			    	response = true;
+			    }
 			} catch (IOException e) {
 				logger.error("Error --> ", e);
 			}
-			
-			messageBodyPart.setContent(html.toString(),
-					"text/html; charset=utf-8");
-			
-			Multipart multipart = new MimeMultipart();
-			
-			//Setting email text message
-			multipart.addBodyPart(messageBodyPart);
- 
-			//set the attachments to the email
-	        message.setContent(multipart);
- 
-	        Transport transport = session.getTransport("smtp");
-	        transport.connect("smtp.gmail.com", gmailAccount, gmailPassword);
-	        transport.sendMessage(message, message.getAllRecipients());
-	        transport.close();
-			response = true;
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
 		
 		return response;
 	}
 	
 	public boolean sendOrderUser(Cart cart){
-		logger.info("Se ejecuta el metodo para el envio de correo para la tienda");
+		logger.info("Se ejecuta el metodo para el envio de correo para el usuario");
+		Email from = new Email(gmailAccount);
+	    String subject = new StringBuilder().append("Orden de Compra Realizada").toString();
 		boolean response = false;
+		Email to = new Email(cart.getUsuario().getEmail());
 		
-		String destinations = new StringBuilder().append(cart.getUsuario().getEmail()).toString();
-		
-		Properties props = propertiesServerMail();
-		final String[] emailDestinations = destinations.split(";");
- 
-		Session session = setSessionServerMail(props, gmailAccount, gmailPassword);
-		
-		try {
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(gmailAccount));
-			
-			for (String emailDestination : emailDestinations) {
-				message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(emailDestination));
-			}
- 
-			message.setSubject(new StringBuilder().append("Orden de Compra Realizada").toString());
- 
-			BodyPart messageBodyPart = new MimeBodyPart();
-			
-			StringBuilder html = new StringBuilder();
-			StringBuilder msj = new StringBuilder();
+		StringBuilder html = new StringBuilder();
+		StringBuilder msj = new StringBuilder();
 			msj.append("Gracias por tu compra en MiniMarket Dulce Alegria KyE, el mini market que lo pone todo a tu alcance. ")
 			.append("A continuación te mostramos un detalle de tu compra, si tienes alguna duda ó algo no esta bien por favor comunicate con nostros inmediatamente.");
 
@@ -323,53 +264,25 @@ public class UtilSendMail {
 					                )
 				        ) // close body
 				).render(html);
+				
+				Content content = new Content("text/html", html.toString());
+				Mail mail = new Mail(from, subject, to, content);
+				
+				SendGrid sg = new SendGrid(apiKeySendMail);
+			    Request req = new Request();
+				
+			    req.setMethod(Method.POST);
+			    req.setEndpoint("mail/send");
+			    req.setBody(mail.build());
+			    Response res = sg.api(req);
+			    
+			    if(res.getStatusCode() == 202) {
+			    	response = true;
+			    }
 			} catch (IOException e) {
 				logger.error("Error --> ", e);
-			}
-			
-			messageBodyPart.setContent(html.toString(),
-					"text/html; charset=utf-8");
-			
-			Multipart multipart = new MimeMultipart();
-			
-			//Setting email text message
-			multipart.addBodyPart(messageBodyPart);
- 
-			//set the attachments to the email
-	        message.setContent(multipart);
- 
-	        Transport transport = session.getTransport("smtp");
-	        transport.connect("smtp.gmail.com", gmailAccount, gmailPassword);
-	        transport.sendMessage(message, message.getAllRecipients());
-	        transport.close();
-			response = true;
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
-		
+			}		
 		return response;
-	}
-
-	private static Session setSessionServerMail(Properties props, final String gmailAccount,
-			final String gmailPassword) {
-		Session session = Session.getDefaultInstance(props,
-			new javax.mail.Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(gmailAccount,gmailPassword);
-				}
-			});
-		return session;
-	}
-
-	private Properties propertiesServerMail() {
-		Properties props = new Properties();
-		props.put("mail.smtp.host", gmailSMTPHost);
-		props.put("mail.smtp.user", gmailAccount);
-	    props.put("mail.smtp.clave", gmailPassword);
-		props.put("mail.smtp.auth", AUTH_MAIL);
-		props.put("mail.smtp.starttls.enable", AUTH_MAIL); //Para conectar de manera segura al servidor SMTP
-		props.put("mail.smtp.port", gmailSMTPPort); //El puerto SMTP seguro de Google
-		return props;
 	}
 
 }

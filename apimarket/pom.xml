@@ -75,6 +75,12 @@
 	        <artifactId>j2html</artifactId>
 	        <version>1.0.0</version>
 	    </dependency>
+	    <!-- https://mvnrepository.com/artifact/com.sendgrid/sendgrid-java -->
+		<dependency>
+		    <groupId>com.sendgrid</groupId>
+		    <artifactId>sendgrid-java</artifactId>
+		</dependency>
+	    
 	</dependencies>
 
 	<build>

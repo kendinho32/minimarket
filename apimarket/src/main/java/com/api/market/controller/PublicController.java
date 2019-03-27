@@ -51,6 +51,7 @@ import com.api.market.service.ProductsService;
 import com.api.market.service.PublicService;
 import com.api.market.service.UserService;
 import com.api.market.util.UtilSendMail;
+import com.sendgrid.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -415,5 +416,29 @@ public class PublicController {
             logger.error("No es posible recuperar las ordenes");
             throw new ErrorNegocioException("No es posible recuperar las ordenes","SOL-0004",et);
         }
+	}
+	
+	@GetMapping("/testSendMail")
+	public ResponseEntity<?> testSendMail() throws ErrorNegocioException, IOException {
+		ApiResponse response = new ApiResponse();
+		Email from = new Email("dulceregalokye@gmail.com");
+	    String subject = "Hello World from the SendGrid Java Library!";
+	    Email to = new Email("kendinho22@gmail.com");
+	    Content content = new Content("text/plain", "Hello, Email!");
+	    Mail mail = new Mail(from, subject, to, content);
+
+	    SendGrid sg = new SendGrid("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");
+	    Request request = new Request();
+	    try {
+	      request.setMethod(Method.POST);
+	      request.setEndpoint("mail/send");
+	      request.setBody(mail.build());
+	      Response res = sg.api(request);
+	      response.setData(res);
+	    } catch(IOException et) {
+            logger.error("No es posible recuperar las ordenes");
+            throw new ErrorNegocioException("No es posible recuperar las ordenes","SOL-0004",et);
+        }
+	    return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }
