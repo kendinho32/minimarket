@@ -29,6 +29,9 @@ public class ProductsCart implements Serializable {
 	private String name;
 	
 	@Column(length = 250)
+	private String sku;
+	
+	@Column(length = 250)
 	private String description;
 
 	private Long price;
@@ -125,6 +128,14 @@ public class ProductsCart implements Serializable {
 
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+
+	public String getSku() {
+		return sku;
+	}
+
+	public void setSku(String sku) {
+		this.sku = sku;
 	}
 	
 }

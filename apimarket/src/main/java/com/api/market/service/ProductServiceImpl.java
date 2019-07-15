@@ -63,17 +63,19 @@ public class ProductServiceImpl implements ProductsService {
 		
 		if(!dataProcess.isEmpty()) {
 			for(String[] element : dataProcess) {
-				if(i < 100) {
+				if(i < 10) {
+					String[] array = element[0].split(";");
 					Products product = new Products();
 					// Se busca la categoria
-					Categories categories = categorieService.loadCategorieByName(element[9]);
+					Categories categories = categorieService.loadCategorieByName(array[5]);
+					product.setSku(array[0]);
 					product.setCategorie(categories);
-					product.setDescription(element[2]);
-					product.setName(element[2]);
-					product.setPrice((long) Integer.parseInt(element[5]));
-					product.setQuantity(Float.valueOf(element[3]));
+					product.setDescription(array[2]);
+					product.setName(array[1]);
+					product.setPrice((long) Integer.parseInt(array[3]));
+					product.setQuantity(Float.valueOf(array[4]));
 					product.setOutstanding(false);
-					product.setStatus(false);
+					product.setStatus(true);
 					
 					listProducts.add(product);
 				} else {
