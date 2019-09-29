@@ -264,7 +264,13 @@ public class UtilSendMail {
 					                			br()
 					                	),
 					                	p("Puedes ver tus compras en la sección mis compras.")
-					                )
+					                ),
+				                	div(attrs("#resumen3"),
+					                		p("Tambien puedes cancelar utilizando el codigo QR de Mercado Pago"),
+						                	p().with(
+						                			img().withSrc(new StringBuilder().append(urlFromImg).append("qrMercadoPago.png").toString())
+						                	)
+						                )
 				        ) // close body
 				).render(html);
 				
